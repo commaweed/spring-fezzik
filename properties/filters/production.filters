@@ -1,0 +1,6 @@
+# The production environment property file filters 
+#	Include all properties filters that will populate the source file.
+#	That is, this is the main filtering file for the actual source; other environments can override these values.
+
+filter.web.application.security.type=basicAuth
+filter.web.application.environment=production

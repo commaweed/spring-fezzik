@@ -1,0 +1,92 @@
+{
+	"configuration": {
+		"name": "fezzik-config-log",
+		"status": "trace",
+		"dest": "${env:CATALINA_HOME}/logs/log4j_configuration_helper.log",
+		"verbose": true,
+		"properties": {
+			"property": [
+				{ "name": "app.name", "value": "fezzik" },
+				{ "name": "app.package.name", "value": "fezzik" },
+				{ "name": "tomcat.log.dir", "value": "${env:CATALINA_HOME}/logs" },
+				{ "name": "archive.dir", "value": "${tomcat.log.dir}/archive" },
+				{ "name": "patternLayout", "value": "%d [%t] %-5p [%C.%M()] %m%n" },
+				{ "name": "app.log.dir", "value": "${tomcat.log.dir}/${app.name}" },
+				{ "name": "app.archive.dir", "value": "${archiveDir}/${app.name}" }
+			]
+		},
+		"appenders": {
+			"appender": [
+				{
+					"type": "RollingFile",
+					"name": "rootAppender",
+					"fileName": "${app.log.dir}/root.log",
+					"filePattern": "${app.archive.dir}/$${date:yyyy-MM-dd}/root.log.%d{yyyy-MM-dd}.gz",
+					"immediateFlush": true,
+					"PatternLayout": { "pattern": "${patternLayout}" },
+					"Policies": {
+						"OnStartupTriggeringPolicy": {},
+						"TimeBasedTriggeringPolicy": { "interval": "1", "modulate": true }
+					},
+					"DefaultRolloverStrategy": {
+						"delete": {
+							"basePath": "${app.archive.dir}",
+							"maxDepth": 1,
+							"IfLastModified": { "age": "7d" }
+						}
+					}
+				},
+				{
+					"type": "RollingFile",
+					"name": "mainAppAppender",
+					"fileName": "${app.log.dir}/${app.name}-webapp.log",
+					"filePattern": "${app.archive.dir}/$${date:yyyy-MM-dd}/${app.name}-webapp.log.%d{yyyy-MM-dd}",
+					"immediateFlush": true,
+					"PatternLayout": { "pattern": "${patternLayout}" },
+					"Policies": {
+						"OnStartupTriggeringPolicy": {},
+						"TimeBasedTriggeringPolicy": { "interval": "1", "modulate": true }
+					},
+					"DefaultRolloverStrategy": {
+						"delete": {
+							"basePath": "${app.archive.dir}",
+							"maxDepth": 1,
+							"IfLastModified": { "age": "7d" }
+						}
+					}
+				},
+				{
+					"type": "Console",
+					"name": "stdout",
+					"PatternLayout": { "pattern": "${patternLayout}" }
+				}
+			]
+		},
+		"loggers": {
+			"root": {
+				"level": "debug",
+				"appender-ref": { "ref": "rootAppender" }
+			},
+			"logger": [
+				{
+					"name": "${app.package.name}",
+					"level": "debug",
+					"additivity": false,
+					"appender-ref": { "ref": "mainAppAppender" }
+				},
+				{
+					"name": "org.apache",
+					"level": "info",
+					"additivity": false,
+					"appender-ref": { "ref": "mainAppAppender" }
+				},
+				{
+					"name": "org.springframework",
+					"level": "info",
+					"additivity": false,
+					"appender-ref": { "ref": "mainAppAppender" }
+				}
+			]
+		}
+	}
+}

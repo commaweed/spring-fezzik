@@ -1,0 +1,66 @@
+resource libraries:
+
+Used bower to download many of the web libraries we may use:
+
+bower init
+bower install underscore bootstrap angular requirejs jquery jquery-ui react lodash handlebars uglify-js angular-bootstrap jasmine font-awesome --save
+
+FYI
+
+{
+  "name": "fezzik",
+  "authors": [
+    "commaweed <tjjenk2@yahoo.com>"
+  ],
+  "description": "fezzik",
+  "main": "fezzik",
+  "keywords": [
+    "fezzik"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "dependencies": {
+  	"backbone": "^1.3.3",
+    "underscore": "^1.8.3",
+    "bootstrap": "^3.3.7",
+    "angular": "^1.5.8",
+    "requirejs": "^2.2.0",
+    "jquery": "^3.1.0",
+    "jquery-ui": "^1.12.0",
+    "react": "^15.3.0",
+    "lodash": "^4.14.1",
+    "handlebars": "^4.0.5",
+    "uglify-js": "^1.3.5",
+    "angular-ui-bootstrap": "^2.0.1",
+    "jasmine-core": "jasmine#^2.4.1",
+    "font-awesome": "^4.6.3"
+  }
+}
+
+The directories probably still need to be cleaned up.
+
+As a side note, bower does not have some libraries, such as yuicompressor, so used npm to install:
+
+* ensure package.json is present to see versions
+# how to create a package.json in a local directory
+npm init
+
+npm install yuicompressor --save
+
+Below are the others that could be loaded via npm.
+npm install underscore --save
+npm install angular --save
+npm install requirejs --save
+npm install jquery --save
+npm install backbone --save
+npm install jquery-ui --save
+npm install react --save
+npm install lodash --save
+npm install handlebars --save
+npm install uglifyjs --save
+
+npm install jasmine --save
+npm install cd-font-awesome -
+
+
+

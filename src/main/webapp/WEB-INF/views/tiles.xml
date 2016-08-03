@@ -1,0 +1,34 @@
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	<definition name="template" template="/WEB-INF/views/templates/main-template.jsp">
+		<put-attribute name="common.css" value="/WEB-INF/views/tiles/common/common-css.jsp" />
+		<put-attribute name="common.header" value="/WEB-INF/views/tiles/common/common-header.jsp" />
+		<put-attribute name="common.footer" value="/WEB-INF/views/tiles/common/common-footer.jsp" />
+		<put-attribute name="common.javascript" value="/WEB-INF/views/tiles/common/common-javascript.jsp" />
+	</definition>
+	<definition name="welcome" extends="template">
+		<put-attribute name="title" value="Welcome to Fezzik" />
+		<put-attribute name="content" value="/WEB-INF/views/tiles/index.jsp" />
+	</definition>	
+	<definition name="home" extends="template">
+		<put-attribute name="title" value="Fezzik Home Page" />
+		<put-attribute name="content" value="/WEB-INF/views/tiles/home.jsp" />
+	</definition>
+	<definition name="page_not_found" extends="template">
+		<put-attribute name="title" value="Requested Fezzik Page Not Found" />
+		<put-attribute name="content" value="/WEB-INF/views/tiles/error/page-not-found.jsp" />
+	</definition>	
+	<definition name="unauthenticated" extends="template">
+		<put-attribute name="title" value="Not Authenticated" />
+		<put-attribute name="content" value="/WEB-INF/views/tiles/error/user-not-authenticated.jsp" />
+	</definition>
+	<definition name="unauthorized" extends="template">
+		<put-attribute name="title" value="Not Authorized" />
+		<put-attribute name="content" value="/WEB-INF/views/tiles/error/user-not-authorized.jsp" />
+	</definition>
+	<definition name="error_occurred" extends="template">
+		<put-attribute name="title" value="Server Error Occurred" />
+		<put-attribute name="content" value="/WEB-INF/views/tiles/error/error-page.jsp" />
+	</definition>	
+</tiles-definitions>
