@@ -29,3 +29,6 @@ cobertura.ser
 
 push_web_app.sh
 
+.idea
+fezzik.iml
+.idea/
