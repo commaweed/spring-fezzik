@@ -7,12 +7,14 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesView;
+import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 
 /**
  * Creates the spring application context and use an annotation
@@ -69,6 +71,15 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 		viewResolver.setViewClass(TilesView.class);
 		return viewResolver;
 	}
+	
+    /**
+     * Configure ViewResolvers to deliver preferred views.
+     */
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        TilesViewResolver viewResolver = new TilesViewResolver();
+        registry.viewResolver(viewResolver);
+    }
 
 	/**
 	 * Represents the location of the tiles configuration files.
@@ -94,7 +105,8 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 		registry.addViewController("/500").setViewName("error_occurred");
 		
 		// web.xml welcome page mapping
-		registry.addViewController("/").setViewName("welcome");
+//		registry.addViewController("/").setViewName("welcome"); //UHG!!!!! Why is tiles prompting me for login????
+		registry.addViewController("/").setViewName("help");
 		
 		// authentication-related mappings
 		registry.addViewController("/login").setViewName("login");

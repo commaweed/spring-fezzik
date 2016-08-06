@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
 
@@ -18,23 +17,20 @@
 	<title><tiles:getAsString name="title" /></title>
 	<link rel="shortcut icon" href="${contextPath}/resources/images/favicon.ico" />
 	
-	<tiles:insertAttribute name="common.css" ignore="true" />
-	<tiles:insertAttribute name="page.css" ignore="true" />
 </head>
 
 <body>
-	<div id="mainnavbar" class="navbar navbar-theme">
-		<tiles:insertAttribute name="common.header" />
-		<tiles:insertAttribute name="page.header" ignore="true" />
+<div class="container" style="width: 90%">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="jumbotron">
+				<h2>Welcome to Fizzek!&nbsp;</h2>
+				<h4 style="color:steelblue">Put Login link here or</h4>
+				<c:url var="messageUrl" value="/home/time"  />
+				<a href="${messageUrl}" class="btn btn-default">Go to home - should prompt a login</a>
+			</div>
+		</div>
 	</div>
-	
-	<tiles:insertAttribute name="content" />
-	
-	<tiles:insertAttribute name="common.footer" />
-	<tiles:insertAttribute name="page.footer" ignore="true" />
-	
-	<!-- javascript goes at the end -->
-	<tiles:insertAttribute name="common.javascript" />
-	<tiles:insertAttribute name="page.javascript" ignore="true" />
+</div>
 </body>
 </html>

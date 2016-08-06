@@ -10,16 +10,21 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  */
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer  { //implements WebApplicationInitializer {
 	
+	public static final String PROPERTY_FILE_SOURCE = "classpath:fezzik.properties";
+	
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebAppInitializer.class);
 
 	/**
-	 * Register Spring security in the root application context.
-	 * @return
+	 * Register all of the configuration classes with the root application context.
+	 * @return A collection of all the config classes that contain spring related things.
 	 */
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[] { SpringSecurityConfig.class };
+		return new Class[] { 
+			SpringSecurityConfig.class, 
+			MongoDbConfig.class 
+		};
 	}
 
 	/**

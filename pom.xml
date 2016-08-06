@@ -112,9 +112,20 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
 			<version>1.9.2.RELEASE</version>
-			<scope>runtime</scope>
 		</dependency>		
 		
+		<!-- provides annotations for Automatic Resource Management, automatic generation of getters, setters, equals, 
+			hashCode and toString, and more! 
+			
+			UHG! this requires JVM arguments - discuss with Matt because it would make for development with less boiler plate
+			-vmargs -javaagent:lombok.jar -Xbootclasspath/a:lombok.jar
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.10</version>
+			<scope>runtime</scope>
+		</dependency>		
+		-->
 				
 		<!-- Logging -->
 		<dependency>

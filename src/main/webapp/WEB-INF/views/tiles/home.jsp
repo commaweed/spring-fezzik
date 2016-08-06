@@ -16,7 +16,7 @@
 	<p>
 		Hello <b><c:out value="${pageContext.request.remoteUser}" /></b>
 </p>
-<c:url var="logoutUrl" value="/" />
+<c:url var="logoutUrl" value="/home/logout" />
 
 <form class="form-inline" action="${logoutUrl}" method="post">
 	<input type="submit" value="Log out" /> 

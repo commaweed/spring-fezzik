@@ -12,7 +12,7 @@
 				{ "name": "archive.dir", "value": "${tomcat.log.dir}/archive" },
 				{ "name": "patternLayout", "value": "%d [%t] %-5p [%C.%M()] %m%n" },
 				{ "name": "app.log.dir", "value": "${tomcat.log.dir}/${app.name}" },
-				{ "name": "app.archive.dir", "value": "${archiveDir}/${app.name}" }
+				{ "name": "app.archive.dir", "value": "${archive.dir}/${app.name}" }
 			]
 		},
 		"appenders": {
@@ -85,7 +85,21 @@
 					"level": "info",
 					"additivity": false,
 					"appender-ref": { "ref": "mainAppAppender" }
-				}
+				},
+				{
+					"name": "org.springframework.data.mongodb",
+					"level": "debug",
+					"additivity": false,
+					"appender-ref": { "ref": "mainAppAppender" }
+				},
+				{
+					"name": "org.apache.jasper.servlet.TldScanner",
+					"level": "debug",
+					"additivity": false,
+					"appender-ref": { "ref": "mainAppAppender" }
+				}			
+				
+					
 			]
 		}
 	}

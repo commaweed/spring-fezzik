@@ -1,7 +1,5 @@
 package fezzik.config;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ import fezzik.common.security.model.WebApplicationSecurityTypeEnum;
  */
 @Configuration
 @EnableWebSecurity
-@PropertySource("classpath:/fezzik.properties")
+@PropertySource(WebAppInitializer.PROPERTY_FILE_SOURCE)
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringSecurityConfig.class);
@@ -31,7 +29,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	/**
 	 * Access properties via environment.
 	 */
-	@Inject
+	@Autowired
 	private Environment environment;
 
 	/**
@@ -46,7 +44,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		authManagerBuilder.inMemoryAuthentication()
 			.withUser("emp").password("e").roles("EMPLOYEE").and()
 			.withUser("admin").password("a").roles("EMPLOYEE", "ADMIN");
-	
 	}
 	
 	/**
@@ -88,18 +85,24 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	private void configureHttpForAuthorizeRequests(HttpSecurity http) throws Exception {
 		// configure all the authorizeRequests the order of the rules matters
 		http.authorizeRequests()
+		
+			// ensure forward and redirects have security applied
+			.filterSecurityInterceptorOncePerRequest(false)
 				
 			// allow for all the web.xml declared error pages to be public (no authentication)
 			.antMatchers( "/404", "/401", "/403", "/500").permitAll() 
 		
 			// allow the follow pages to be public (no authentication)
-			.antMatchers( "/", "/signup", "/info").permitAll() 
+			.antMatchers( "/", "/signup", "/info", "/home/logout").permitAll() 
 			
 			// all requests must have the EMPLOYEE role
 			.anyRequest().hasRole("EMPLOYEE")
 		
 			// admin requests must also have the ADMIN role
-			.antMatchers("/admin/**").hasRole("ADMIN");	
+			.antMatchers("/admin/**").hasRole("ADMIN");
+			
+			// ensure security is applied to any other request
+//			.anyRequest().authenticated();
 	}
 	
 	/**
@@ -115,9 +118,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //			.permitAll()		
 //		.and()
 //	        .logout()
+//			.invalidateHttpSession(true)
 //	        .logoutUrl("/")
+//        	.deleteCookies("JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE")
+//        	.logoutSuccessUrl("/");
 //	        .permitAll();
-		
+
 		http.formLogin();
 	}
 
@@ -137,7 +143,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				break;
 			case x509: 
 				//TODO:
-				http.exceptionHandling().accessDeniedPage("/403");
+				
 				break;
 			case formLogin:
 				configureHttpForFormLogin(http);
@@ -150,9 +156,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		}
 			
 		// configure all the common things that should come at the end
-		http.csrf();
-		
-		
+		http.csrf().disable();
+		http.exceptionHandling().accessDeniedPage("/401");
 	}	
 }
 
@@ -214,5 +219,7 @@ public class PersonRepository {
     }
 }
 
+in jsp can do
+<spring:eval var="fezzik_environment" expression="@environment.getProperty('web.application.environment')" />
 
 */
