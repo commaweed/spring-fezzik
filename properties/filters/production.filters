@@ -4,3 +4,8 @@
 
 filter.web.application.security.type=basicAuth
 filter.web.application.environment=production
+
+# mongo 
+filter.fezzik.mongo.dbname=fezzik
+filter.fezzik.mongo.host=127.0.0.1
+filter.fezzik.mongo.port=27017
