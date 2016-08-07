@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: fezzik
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+
+ribbon:
+  ServerListRefreshInterval: 1000
+
+endpoints:
+  health:
+    sensitive: false
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+
+---
+
+spring:
+  profiles: int,prod
+  application:
+    name: fezzik
+  data:
+    mongodb:
+      host: mongo
+      port: 27017
+
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: changemeasdf
+    key-password: changemeasdf
+
+

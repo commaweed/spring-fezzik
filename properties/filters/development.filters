@@ -1,4 +1,0 @@
-# The development environment property file filters
-#	Only include those properties that will override production values
-
-filter.web.application.environment=development
