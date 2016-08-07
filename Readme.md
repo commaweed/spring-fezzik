@@ -24,8 +24,8 @@ Run the Spring Boot App
     mvn clean spring-boot:run
     
     java -jar fezzik-<version>.jav spring-boot:run 
-    java -jar fezzik-<version>.jav spring-boot:run -Dspring.profiles.active=integration
-    java -jar fezzik-<version>.jav spring-boot:run -Dspring.profiles.active=production
+    java -jar fezzik-<version>.jav spring-boot:run -Dspring.profiles.active=int
+    java -jar fezzik-<version>.jav spring-boot:run -Dspring.profiles.active=prod
 
 Run the build
 
