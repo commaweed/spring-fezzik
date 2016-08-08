@@ -1,17 +1,24 @@
+spring:
+  profiles.active: dev
+
+---
+
+spring:
+  profiles: dev
+
+spring.application:
+    name: fezzik
+spring.data:
+    mongodb:
+      host: localhost
+      port: 27017
+
 server:
   port: 8080
 
 management:
   port: 9090
   address: 127.0.0.1
-
-spring:
-  application:
-    name: fezzik
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
 
 ribbon:
   ServerListRefreshInterval: 1000
@@ -27,10 +34,11 @@ endpoints:
 ---
 
 spring:
-  profiles: int,prod
-  application:
+  profiles: docker
+
+spring.application:
     name: fezzik
-  data:
+spring.data:
     mongodb:
       host: mongo
       port: 27017
@@ -42,4 +50,13 @@ server:
     key-store-password: changemeasdf
     key-password: changemeasdf
 
+management:
+  port: 9443
 
+endpoints:
+  health:
+    sensitive: true
+  restart:
+    enabled: false
+  shutdown:
+    enabled: false

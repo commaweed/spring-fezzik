@@ -17,27 +17,27 @@ Docker needs to be installed and running
 
     docker pull mongo
 
-    docker run --name fezzik-mongo -p 27010:27010 -v ~/dev/data/dir:/data/db -d mongo
+    docker run --name fezzik-mongo -p 27017:27017 -v ~/dev/data/dir:/data/db -d mongo
+    OR
+    docker run -it --name fezzik-mongo -p 27017:27017 -v /your/dir:/data/db -v /your/dir/mongod.conf:/etc/mongod.conf -d mongo --config /etc/mongod.conf
 
 Run the Spring Boot App
 
     mvn clean spring-boot:run
     
     java -jar fezzik-<version>.jav spring-boot:run 
-    java -jar fezzik-<version>.jav spring-boot:run -Dspring.profiles.active=int
-    java -jar fezzik-<version>.jav spring-boot:run -Dspring.profiles.active=prod
+    java -jar fezzik-<version>.jav spring-boot:run -Dspring.profiles.active=docker
 
 Run the build
 
     mvn clean package docker:build
 
-    docker run --name fezzik-webapp -p 8080:8080 --link fezzik-mongo:mongo -d ets/fezzik
-
-    docker run -it --name fezzik-webapp -p 8080:8080  -d ets/fezzik
+    docker run --name fezzik-rest -p 8443:8443 -p 9443:9443 --link fezzik-mongo:mongo  -d ets/fezzik
 
 Test to see if it is running:
 
     localhost:8080
+    localhost:9090
 
 Docker commands:
 

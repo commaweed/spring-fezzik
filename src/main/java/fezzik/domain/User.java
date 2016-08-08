@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 import java.io.Serializable;
 
 @Data
-@Slf4j
 public class User implements Serializable {
 
     @Id
@@ -20,7 +19,6 @@ public class User implements Serializable {
     }
 
     public User(String firstName, String lastName) {
-        log.info("Creating user object...");
         this.firstName = firstName;
         this.lastName = lastName;
     }
