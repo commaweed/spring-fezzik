@@ -2,17 +2,18 @@
 	"configuration": {
 		"name": "fezzik-config-log",
 		"status": "trace",
-		"dest": "${env:CATALINA_HOME}/logs/log4j_configuration_helper.log",
+		"dest": "${env:FEZZIK_HOME}/logs/log4j_configuration_helper.log",
 		"verbose": true,
 		"properties": {
 			"property": [
 				{ "name": "app.name", "value": "fezzik" },
 				{ "name": "app.package.name", "value": "fezzik" },
-				{ "name": "tomcat.log.dir", "value": "${env:CATALINA_HOME}/logs" },
+				{ "name": "tomcat.log.dir", "value": "${env:FEZZIK_HOME}/logs" },
 				{ "name": "archive.dir", "value": "${tomcat.log.dir}/archive" },
 				{ "name": "patternLayout", "value": "%d [%t] %-5p [%C.%M()] %m%n" },
 				{ "name": "app.log.dir", "value": "${tomcat.log.dir}/${app.name}" },
-				{ "name": "app.archive.dir", "value": "${archive.dir}/${app.name}" }
+				{ "name": "app.archive.dir", "value": "${archive.dir}/${app.name}" },
+				{ "name": "appender.to.use", "value": "stdout" }
 			]
 		},
 		"appenders": {
@@ -72,31 +73,31 @@
 					"name": "${app.package.name}",
 					"level": "debug",
 					"additivity": false,
-					"appender-ref": { "ref": "mainAppAppender" }
+					"appender-ref": { "ref": "${appender.to.use}" }
 				},
 				{
 					"name": "org.apache",
 					"level": "info",
 					"additivity": false,
-					"appender-ref": { "ref": "mainAppAppender" }
+					"appender-ref": { "ref": "${appender.to.use}" }
 				},
 				{
 					"name": "org.springframework",
 					"level": "info",
 					"additivity": false,
-					"appender-ref": { "ref": "mainAppAppender" }
+					"appender-ref": { "ref": "${appender.to.use}" }
 				},
 				{
 					"name": "org.springframework.data.mongodb",
 					"level": "debug",
 					"additivity": false,
-					"appender-ref": { "ref": "mainAppAppender" }
+					"appender-ref": { "ref": "${appender.to.use}" }
 				},
 				{
 					"name": "org.apache.jasper.servlet.TldScanner",
 					"level": "debug",
 					"additivity": false,
-					"appender-ref": { "ref": "mainAppAppender" }
+					"appender-ref": { "ref": "${appender.to.use}" }
 				}			
 				
 					
