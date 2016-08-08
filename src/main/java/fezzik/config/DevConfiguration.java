@@ -20,8 +20,8 @@ public class DevConfiguration implements CommandLineRunner {
         repository.deleteAll();
 
         // save a couple of customers
-        repository.save(new User("Jane", "Smith"));
-        repository.save(new User("John", "Smith"));
+        repository.save(new User("jjsmith", "Jane", "Smith", "yo mama"));
+        repository.save(new User("jrsmith", "John", "Smith", "yo mama2"));
 
         // fetch all customers
         System.out.println("Customers found with findAll():");
