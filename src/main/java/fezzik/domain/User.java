@@ -1,15 +1,18 @@
 package fezzik.domain;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.annotation.Id;
-
 import java.io.Serializable;
 
-@Data
-public class User implements Serializable {
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.data.annotation.Id;
 
-    @Id
+public class User implements Serializable {
+	
+	private static final long serialVersionUID = -2751305641698104649L;
+	
+	@Id
     private String id;
     private String firstName;
     private String lastName;
@@ -22,11 +25,29 @@ public class User implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object other) {
+            return EqualsBuilder.reflectionEquals(this, other);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
-        return String.format("User[id=%s, firstName='%s', lastName='%s']", id,
-                firstName, lastName);
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
 }
