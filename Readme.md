@@ -26,8 +26,10 @@ Run the Spring Boot App
 
 Test to see if it is running:
 
-    Spring Boot
     localhost:8080
+    Swagger: http://localhost:8080/swagger-ui.html
+    HAL Browser: http://localhost:8080/browser/index.html
+    
     localhost:9090
 
 Run the build
@@ -38,10 +40,12 @@ Run the build
 
 Test to see if it is running:
 
-    Docker
-    https://localhost:8080/
+    https://localhost:8443/
+    Swagger: http://localhost:8443/swagger-ui.html
+    HAL Browser: http://localhost:8443/browser/index.html
+    
     https://localhost:9443/health
-
+    
 Docker commands:
 
     Show running docker containers:
@@ -62,10 +66,3 @@ Docker commands:
     Log into mongo running in a container
         docker exec -it fezzik-mongo mongo admin
         
-Swagger
-
-    http://localhost:8080/swagger-ui.html
-    
-HAL Browser
-
-    http://localhost:8080/browser/index.html
