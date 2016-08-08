@@ -31,6 +31,12 @@ endpoints:
     enabled: true
   shutdown:
     enabled: true
+    
+fezzik:
+  rest:
+    username: inigo
+    passwd: montoya
+    role: rest_service
 
 ---
 
@@ -62,3 +68,9 @@ endpoints:
     enabled: false
   shutdown:
     enabled: false
+    
+fezzik:
+  rest:
+    username: inigo
+    passwd: montoya
+    role: rest_service    
