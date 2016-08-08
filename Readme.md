@@ -8,10 +8,6 @@
     \ \ \       P2P Appliction - Version 1.0.0
     ====================================================
 
-Install Lombok Plugin
-
-    
-
 
 Docker needs to be installed and running
 
@@ -28,6 +24,12 @@ Run the Spring Boot App
     java -jar fezzik-<version>.jav spring-boot:run 
     java -jar fezzik-<version>.jav spring-boot:run -Dspring.profiles.active=docker
 
+Test to see if it is running:
+
+    Spring Boot
+    localhost:8080
+    localhost:9090
+
 Run the build
 
     mvn clean package docker:build
@@ -36,8 +38,9 @@ Run the build
 
 Test to see if it is running:
 
-    localhost:8080
-    localhost:9090
+    Docker
+    https://localhost:8080/
+    https://localhost:9443/health
 
 Docker commands:
 
