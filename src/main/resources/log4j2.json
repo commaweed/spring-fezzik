@@ -13,7 +13,7 @@
 				{ "name": "patternLayout", "value": "%d [%t] %-5p [%C.%M()] %m%n" },
 				{ "name": "app.log.dir", "value": "${tomcat.log.dir}/${app.name}" },
 				{ "name": "app.archive.dir", "value": "${archive.dir}/${app.name}" },
-				{ "name": "appender.to.use", "value": "stdout" }
+				{ "name": "appender.to.use", "value": "mainAppAppender" }
 			]
 		},
 		"appenders": {
@@ -88,6 +88,12 @@
 					"appender-ref": { "ref": "${appender.to.use}" }
 				},
 				{
+					"name": "springfox.documentation",
+					"level": "info",
+					"additivity": false,
+					"appender-ref": { "ref": "${appender.to.use}" }
+				},				
+				{
 					"name": "org.springframework.data.mongodb",
 					"level": "debug",
 					"additivity": false,
@@ -98,8 +104,19 @@
 					"level": "debug",
 					"additivity": false,
 					"appender-ref": { "ref": "${appender.to.use}" }
-				}			
-				
+				},			
+				{
+					"name": "org.mongodb.driver",
+					"level": "error",
+					"additivity": false,
+					"appender-ref": { "ref": "${appender.to.use}" }
+				},			
+				{
+					"name": "org.hibernate",
+					"level": "error",
+					"additivity": false,
+					"appender-ref": { "ref": "${appender.to.use}" }
+				}							
 					
 			]
 		}

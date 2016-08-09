@@ -3,6 +3,7 @@ package fezzik.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Java configuration for spring security. Alternate annotation types:
@@ -39,8 +42,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		final String PWD = environment.getRequiredProperty("fezzik.rest.passwd");
 		final String ROLE = environment.getRequiredProperty("fezzik.rest.role");
 		
-		authManagerBuilder.inMemoryAuthentication()
-			.withUser(USER).password(PWD).roles(ROLE);
+		// the password file contains the encrypted password, but the user provides the real password
+		// dave's war would need to send us the non-encrypted password; 
+		// if the same technique is used to encrypt, we'll probably have to create a UserDetailsService to handle it
+		authManagerBuilder
+			.inMemoryAuthentication()
+			.passwordEncoder(getPasswordEncoder())
+			.withUser(USER)
+			.password(PWD)
+			.roles(ROLE);
 	}
 	
 	/**
@@ -63,5 +73,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().anyRequest().hasRole("rest_service");
 		http.httpBasic();	
-	}	
+	}
+	
+	/**
+	 * Register the password encoder as a spring bean.
+	 * @return An instance of the password encoder we will be using for the basic authentication password from 
+	 *         Dave's war and for user documents.
+	 */
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder(16); // strength = 16 (takes time to match, maybe reduce to 4??)
+    }
 }
