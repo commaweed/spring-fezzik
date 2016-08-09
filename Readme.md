@@ -8,6 +8,9 @@
     \ \ \       P2P Appliction - Version 1.0.0
     ====================================================
 
+Linux VM setup:
+
+    https://docs.docker.com/engine/installation/linux/centos/
 
 Docker needs to be installed and running
 
@@ -21,8 +24,8 @@ Run the Spring Boot App
 
     mvn clean spring-boot:run
     
-    java -jar fezzik-<version>.jav spring-boot:run 
-    java -jar fezzik-<version>.jav spring-boot:run -Dspring.profiles.active=docker
+    java -jar fezzik-<version>.jar spring-boot:run 
+    java -jar fezzik-<version>.jar spring-boot:run -Dspring.profiles.active=docker
 
 Test to see if it is running:
 
@@ -30,7 +33,12 @@ Test to see if it is running:
     Swagger: http://localhost:8080/swagger-ui.html
     HAL Browser: http://localhost:8080/browser/index.html
     
-    localhost:9090
+    localhost:9090/health
+    localhost:9090/beans
+    localhost:9090/dump
+    localhost:9090/metric
+    localhost:9090/info
+    localhost:9090/trace
 
 Run the build
 
@@ -45,7 +53,12 @@ Test to see if it is running:
     HAL Browser: http://localhost:8443/browser/index.html
     
     https://localhost:9443/health
-    
+    https://localhost:9443/beans
+    https://localhost:9443/dump
+    https://localhost:9443/metric
+    https://localhost:9443/info
+    https://localhost:9443/trace
+
 Docker commands:
 
     Show running docker containers:
@@ -65,4 +78,6 @@ Docker commands:
 
     Log into mongo running in a container
         docker exec -it fezzik-mongo mongo admin
-        
+
+    Delete untagged images
+        docker images -q --filter "dangling=true" | xargs docker rmi
