@@ -30,6 +30,7 @@ import fezzik.web.controller.model.UserCredentials;
 @RestController
 @ExposesResourceFor(UserController.class)
 @RequestMapping("/users2")
+//TODO: figure out how to give good bad request message
 public class UserController implements ResourceProcessor<RepositoryLinksResource> {
 	
 	@SuppressWarnings("unused")
@@ -58,14 +59,14 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
     
     /**
      * For any controller method that throws UserNotFoundException, cause it to return a 200 status code with the error message.
-     * @param response
-     * @param e
-     * @return
+     * @param response A fezzik response that will get mashalled to the client.
+     * @param e The allowable fezzik exception that occurred.
+     * @return a success=false, errorMessage=e.getMessage() response.
      * @throws IOException
      */
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler( { UserNotFoundException.class, IllegalArgumentException.class, InvalidPasswordException.class } )
     @ResponseBody
-    private FezzikResponse handleUserNotFoundException(HttpServletResponse response, UserNotFoundException e) throws IOException {
+    private FezzikResponse handleFezzikAllowableExceptions(HttpServletResponse response, RuntimeException e) throws IOException {
     	return new FezzikResponse(e.getMessage());
     }
     
@@ -75,17 +76,12 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
 	 */
     @RequestMapping(value = "/validate-login", method = RequestMethod.POST, produces = "application/json")
     public FezzikResponse isValidLogin(@RequestBody UserCredentials userCredentials) {
-    	// TODO: figure out how to give good bad request message
     	FezzikResponse response = new FezzikResponse(); // default to success
     	
-    	try {
-    		boolean validLogin = userService.isValidLogin(userCredentials.getUserId(), userCredentials.getPassword());
-    		if (!validLogin) {
-    			response = new FezzikResponse("isValidLogin returned false; THERE IS NO REASON RIGHT AT THIS MOMENT THAT THIS SHOULD OCCUR!");
-    		}
-    	} catch (UserNotFoundException | InvalidPasswordException | IllegalArgumentException e) {
-    		response = new FezzikResponse(e.getMessage());
-    	} 
+		boolean validLogin = userService.isValidLogin(userCredentials.getUserId(), userCredentials.getPassword());
+		if (!validLogin) {
+			response = new FezzikResponse("isValidLogin returned false; THERE IS NO REASON RIGHT AT THIS MOMENT THAT THIS SHOULD OCCUR!");
+		}
     	
         return response;
     }
