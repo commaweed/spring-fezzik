@@ -53,8 +53,6 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
 	 */
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET, produces = "application/json")
     public User getUser(@PathVariable String userId) {
-    	// TODO: figure out what to do about the usernotfoundexception, @exceptionhandler, we want 404 not found
-	
         return userService.getUser(userId);
     }
     
