@@ -5,6 +5,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
@@ -16,10 +18,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import fezzik.web.controller.model.WebAttributeError;
 
 /**
- * Changes /error which by default is HTML to JSON.
+ * The framework was forwarding error responses as HTML.  This controller overrides the "/error" mapping that the framework
+ * is using that by default returned HTML, to JSON.
  */
 @RestController
 public class FezzikRestErrorController implements ErrorController {
+	
+	@SuppressWarnings("unused")
+	private static final Logger LOGGER = LoggerFactory.getLogger(FezzikRestErrorController.class);
 
 	// Provides access to error attributes which can be logged or presented to the user.
     @Autowired
@@ -34,7 +40,7 @@ public class FezzikRestErrorController implements ErrorController {
      * @return
      */
     @RequestMapping(value = ERROR_PATH)
-    WebAttributeError error(HttpServletRequest request, HttpServletResponse response) {
+    public WebAttributeError error(HttpServletRequest request, HttpServletResponse response) {
     	// TODO: use a property in the property file to control whether or not we want the stack trace 
     	boolean includeStackTrace = false;
     	

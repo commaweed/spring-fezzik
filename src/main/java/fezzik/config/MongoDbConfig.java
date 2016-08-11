@@ -55,10 +55,11 @@ public class MongoDbConfig extends AbstractMongoConfiguration {
 		
 		ServerAddress serverAddress = new ServerAddress(MONGO_HOST, MONGO_PORT);
 		
-		//TODO: what options do we want
+		// TODO: what options do we want
 		MongoClientOptions options = new MongoClientOptions.Builder().build();
 		return new MongoClient(serverAddress, options);
 		
+		// TODO: determine if we want this rest app to connect to mongo using a db username/password or ssl, etc.
 //      ServerAddress serverAddress = new ServerAddress(environment.getRequiredProperty("spring.data.mongodb.host"));
 //      List<MongoCredential> credentials = new ArrayList<>();
 //      credentials.add(MongoCredential.createScramSha1Credential(
