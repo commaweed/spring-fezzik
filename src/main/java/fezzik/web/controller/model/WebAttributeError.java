@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * Represents a wrapper for a spring rest error.  It will get turned into JSON.
+ * Represents a wrapper for a spring rest bad http status codes.  It will get turned into JSON.
  */
 public class WebAttributeError {
 

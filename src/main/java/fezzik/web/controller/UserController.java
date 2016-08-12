@@ -1,9 +1,6 @@
 package fezzik.web.controller;
 
-import java.io.IOException;
 import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,17 +9,13 @@ import org.springframework.data.rest.webmvc.RepositoryLinksResource;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import fezzik.domain.User;
-import fezzik.exception.InvalidPasswordException;
-import fezzik.exception.UserNotFoundException;
 import fezzik.service.UserService;
 import fezzik.web.controller.model.FezzikResponse;
 import fezzik.web.controller.model.UserCredentials;
@@ -30,7 +23,7 @@ import fezzik.web.controller.model.UserCredentials;
 @RestController
 @ExposesResourceFor(UserController.class)
 @RequestMapping("/users2")
-//TODO: figure out how to give good bad request message
+//TODO: figure out how to give good bad request message for bad post body (USE Matt's AOP idea)
 public class UserController implements ResourceProcessor<RepositoryLinksResource> {
 	
 	@SuppressWarnings("unused")
@@ -57,19 +50,6 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
         return userService.getUser(userId);
     }
     
-    /**
-     * For any controller method that throws UserNotFoundException, cause it to return a 200 status code with the error message.
-     * @param response A fezzik response that will get mashalled to the client.
-     * @param e The allowable fezzik exception that occurred.
-     * @return a success=false, errorMessage=e.getMessage() response.
-     * @throws IOException
-     */
-    @ExceptionHandler( { UserNotFoundException.class, IllegalArgumentException.class, InvalidPasswordException.class } )
-    @ResponseBody
-    private FezzikResponse handleFezzikAllowableExceptions(HttpServletResponse response, RuntimeException e) throws IOException {
-    	return new FezzikResponse(e.getMessage());
-    }
-    
 	/**
 	 * Validates a login.
 	 * @return
@@ -80,16 +60,20 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
     	
 		boolean validLogin = userService.isValidLogin(userCredentials.getUserId(), userCredentials.getPassword());
 		if (!validLogin) {
-			response = new FezzikResponse("isValidLogin returned false; THERE IS NO REASON RIGHT AT THIS MOMENT THAT THIS SHOULD OCCUR!");
+			response = FezzikResponse.getFailureResponse(
+				"isValidLogin returned false; THERE IS NO REASON RIGHT AT THIS MOMENT THAT THIS SHOULD OCCUR!"
+			);
 		}
     	
         return response;
     }
 
+    /**
+     * um...
+     */
     @Override
     public RepositoryLinksResource process(RepositoryLinksResource resource) {
         resource.add(ControllerLinkBuilder.linkTo(UserController.class).withRel("users2"));
-
         return resource;
     }
 }

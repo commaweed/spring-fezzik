@@ -1,25 +1,26 @@
 package fezzik.web.controller.model;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+/**
+ * Represents a canned response the controller layer can send to the client.
+ */
+@JsonInclude(Include.NON_NULL)
 public class FezzikResponse {
 	
 	private boolean success;
 	private String message;
+	private String exceptionType;
 	
 	/**
-	 * Initialize; use this constructor for a response with no content as the body and a success of true.
+	 * Initialize; default constructor required by jackson.
 	 */
 	public FezzikResponse() {
 		this(null, null);
-	}
-	
-	/**
-	 * Initialize with the given error message; success will be <code>false</code>.
-	 * @param errorMessage The error message.
-	 */
-	public FezzikResponse(String errorMessage) {
-		this(false, errorMessage);
 	}
 	
 	/**
@@ -58,9 +59,69 @@ public class FezzikResponse {
 	 * @param message the message to set
 	 */
 	public void setMessage(String message) {
-		this.message = StringUtils.trimToNull(message) == null ? "NONE" : message;
+		this.message = message;
+	}
+
+	/**
+	 * @return the exceptionType
+	 */
+	public String getExceptionType() {
+		return exceptionType;
+	}
+
+	/**
+	 * @param exceptionType the exceptionType to set
+	 */
+	public void setExceptionType(String exceptionType) {
+		if (exceptionType != null) {
+			this.exceptionType = exceptionType;
+		}
 	}
 	
+	/**
+	 * Returns a FezzikResponse to indicate a success.  The message is optional.
+	 * @param message The message to return to the client, if any.
+	 * @return A FezzikResponse representing a success.
+	 */
+	public static FezzikResponse getSuccessResponse(String message) {
+		return new FezzikResponse(true, message);
+	}
 	
+	/**
+	 * Returns a FezzikResponse for a failure that occurred due to an exception. 
+	 * @param cause The exception that occurred.  
+	 * @return A FezzikResponse representing an error.
+	 * @throws IllegalArgumentException If the required parameters are missing or invalid.
+	 */
+	public static FezzikResponse getExceptionResponse(Exception cause) {
+		if (cause == null) {
+			throw new IllegalArgumentException("Invalid cause; it cannot be null!");
+		}
+		
+		FezzikResponse response = new FezzikResponse(false, cause.getMessage());
+		
+		if (cause != null) {
+			response.setExceptionType(cause.getClass().getSimpleName());
+		}
+		
+		return response;
+	}
+	
+	/**
+	 * Returns a FezzikResponse for a failure that occurred.  The message is optional.
+	 * @param message The message to return to the client, if any.
+	 * @return A FezzikResponse representing a failure.
+	 */
+	public static FezzikResponse getFailureResponse(String message) {
+		return new FezzikResponse(false, message);
+	}
+	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+    	return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
 	
 }
