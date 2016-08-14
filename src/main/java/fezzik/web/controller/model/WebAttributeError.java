@@ -92,7 +92,7 @@ public class WebAttributeError {
      */
     @Override
     public boolean equals(Object other) {
-            return EqualsBuilder.reflectionEquals(this, other);
+        return EqualsBuilder.reflectionEquals(this, other);
     }
 
     /**
@@ -100,7 +100,7 @@ public class WebAttributeError {
      */
     @Override
     public int hashCode() {
-            return HashCodeBuilder.reflectionHashCode(this);
+    	return HashCodeBuilder.reflectionHashCode(this);
     }
 
     /**
@@ -108,7 +108,7 @@ public class WebAttributeError {
      */
     @Override
     public String toString() {
-            return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    	return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
     
