@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import fezzik.domain.User;
+import fezzik.exception.FezzikDatabaseException;
 import fezzik.exception.InvalidPasswordException;
 import fezzik.exception.UserNotFoundException;
 import fezzik.repository.UserRepository;
@@ -29,6 +30,38 @@ public class UserServiceImpl implements UserService {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public void addUser(User user) {
+		if (user == null) {
+			throw new IllegalArgumentException("Invalid user; it cannot be null!");
+		}
+		user.validate();
+		
+		// encrypt the password
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		
+		try {
+			user = userRepository.save(user);
+		} catch (Exception e) {
+			throw new FezzikDatabaseException("Unable to add user due to error: " + user, e);
+		} 	
+	}
+	
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public void removeAllUsers() {
+		try {
+			userRepository.deleteAll();
+		} catch (Exception e) {
+			throw new FezzikDatabaseException("Unable to remove all users due to error", e);
+		} 	
+	}
   
     /**
      * {@inheritDoc}
@@ -39,7 +72,13 @@ public class UserServiceImpl implements UserService {
 			throw new IllegalArgumentException("Invalid userId; it cannot be null.");
 		}
 		
-		User user = userRepository.findOne(userId);
+		User user;
+		try {
+			user = userRepository.findOne(userId);
+		} catch (Exception e) {
+			throw new FezzikDatabaseException("Unable to get user [" + userId + "] due to error", e);
+		}
+		
 		if (user == null) {
 			throw new UserNotFoundException(userId);
 		}
@@ -52,7 +91,14 @@ public class UserServiceImpl implements UserService {
      */
 	@Override
 	public List<User> getAllUsers() {
-		List<User> allUsers = userRepository.findAll();
+		List<User> allUsers;
+		
+		try {
+			allUsers = userRepository.findAll();
+		} catch (Exception e) {
+			throw new FezzikDatabaseException("Unable to retrieve all users due to error", e);
+		}
+		
 		return allUsers == null ? new ArrayList<>() : allUsers;
 	}
 
@@ -63,21 +109,11 @@ public class UserServiceImpl implements UserService {
 	public boolean isValidLogin(String userId, String password) {
 		User user = getUser(userId);
 		
-		if (!doesPasswordMatch(user, password)) {
+		if (!passwordEncoder.matches(password, user.getPassword())) {
 			throw new InvalidPasswordException(userId);
 		}
 		
 		return true;
 	}
-	
-	/**
-	 * Indicates whether or not the given password is correct for the given user.
-	 * @param password The password to test.
-	 * @param user The user record that was found in the database.
-	 * @return
-	 */
-	private boolean doesPasswordMatch(User user, String password) {
-		String encodedPassword = passwordEncoder.encode(password);
-		return passwordEncoder.matches(user.getPassword(), encodedPassword);			
-	}
+
 }

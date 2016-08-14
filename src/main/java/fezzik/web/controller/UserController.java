@@ -20,9 +20,10 @@ import fezzik.service.UserService;
 import fezzik.web.controller.model.FezzikResponse;
 import fezzik.web.controller.model.UserCredentials;
 
+
 @RestController
 @ExposesResourceFor(UserController.class)
-@RequestMapping("/users2")
+@RequestMapping("/rest")
 //TODO: figure out how to give good bad request message for bad post body (USE Matt's AOP idea)
 public class UserController implements ResourceProcessor<RepositoryLinksResource> {
 	
@@ -32,11 +33,17 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
 	@Autowired
 	private UserService userService;
 
+    @RequestMapping(value = "/user", method = RequestMethod.POST, produces = "application/json")
+	public FezzikResponse addUser(@RequestBody User user) {
+		userService.addUser(user);
+		return FezzikResponse.getSuccessResponse("Added user with ID [" + user.getUuid() + "]");
+	}
+	
 	/**
 	 * Returns all users.
 	 * @return
 	 */
-    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/user/all", method = RequestMethod.GET, produces = "application/json")
 	public List<User> getAllUsers() {
 		return userService.getAllUsers();
 	}
@@ -45,7 +52,7 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
 	 * Returns single user.
 	 * @return
 	 */
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = "application/json")
     public User getUser(@PathVariable String userId) {
         return userService.getUser(userId);
     }
@@ -54,7 +61,7 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
 	 * Validates a login.
 	 * @return
 	 */
-    @RequestMapping(value = "/validate-login", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/user/validate-login", method = RequestMethod.POST, produces = "application/json")
     public FezzikResponse isValidLogin(@RequestBody UserCredentials userCredentials) {
     	FezzikResponse response = new FezzikResponse(); // default to success
     	
@@ -73,7 +80,7 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
      */
     @Override
     public RepositoryLinksResource process(RepositoryLinksResource resource) {
-        resource.add(ControllerLinkBuilder.linkTo(UserController.class).withRel("users2"));
+        resource.add(ControllerLinkBuilder.linkTo(UserController.class).withRel("rest"));
         return resource;
     }
 }
