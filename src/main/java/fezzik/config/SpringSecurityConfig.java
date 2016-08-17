@@ -87,6 +87,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
     @Bean
     public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder(16); // strength = 16 (takes time to match, maybe reduce to 4??)
+    	// TODO: do we care if the encryption strength is in a property or not (probably not)
+        return new BCryptPasswordEncoder(4); // strength = 16 (takes time to match, maybe reduce to 4??)
     }
 }

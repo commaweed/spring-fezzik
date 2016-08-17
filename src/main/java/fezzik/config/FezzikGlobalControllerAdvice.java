@@ -8,9 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import fezzik.exception.InvalidPasswordException;
 import fezzik.exception.UserNotFoundException;
@@ -51,6 +53,7 @@ public class FezzikGlobalControllerAdvice {
 //    @ExceptionHandler( { UserNotFoundException.class, IllegalArgumentException.class, InvalidPasswordException.class } )
     @ExceptionHandler( Exception.class )
     @ResponseBody
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     private FezzikResponse handleFezzikAllowableExceptions(HttpServletResponse response, Exception e) throws IOException {
     	if (!isKnownExceptionType(e)) {
     		LOGGER.error("Unexpected/Untrapped Exception occurred", e);

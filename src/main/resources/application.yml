@@ -35,7 +35,7 @@ endpoints:
 fezzik:
   rest:
     username: inigo
-    passwd: $2a$16$zZX1uBdeDm.InOGPy3hxp.s3hyyWOo.ObamAQYSySk69FY07aCNv6 # remove this comment later = montoya
+    passwd: $2a$04$74Mmg.FgUXqm/FGMZofL2.ZCXuSE/HF7Ijx7LeZZheqaVKUf9ceH2 # remove this comment later = montoya
     role: rest_service
 
 ---
