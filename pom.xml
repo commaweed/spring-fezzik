@@ -31,7 +31,8 @@
             <id>int</id>
             <activation>
                 <property>
-                    <name>int</name>
+                    <name>enviro</name>
+                    <value>int</value>
                 </property>
             </activation>
             <properties>
