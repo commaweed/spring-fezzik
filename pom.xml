@@ -229,7 +229,7 @@
                 </executions>
                 <configuration>
                     <serverId>nexus</serverId>
-                    <nexusUrl>http://${nexus-server}:${nexus-port}/nexus/</nexusUrl>
+                    <nexusUrl>http://${nexus-server}:${nexus-port}/</nexusUrl>
                     <skipStaging>true</skipStaging>
                 </configuration>
             </plugin>
