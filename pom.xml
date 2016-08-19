@@ -17,6 +17,29 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <docker-server></docker-server>
+            </properties>
+        </profile>
+        <profile>
+            <id>int</id>
+            <activation>
+                <property>
+                    <name>int</name>
+                </property>
+            </activation>
+            <properties>
+                <docker-server>docker:5000/</docker-server>
+            </properties>
+        </profile>
+    </profiles>
+
     <distributionManagement>
         <snapshotRepository>
             <id>nexus-snapshots</id>
@@ -129,7 +152,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.11</version>
                 <configuration>
-                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <imageName>${docker-server}${docker.image.prefix}/${project.artifactId}</imageName>
                     <dockerDirectory>docker</dockerDirectory>
                     <resources>
                         <resource>
