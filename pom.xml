@@ -24,7 +24,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <docker-server></docker-server>
+                <docker.server></docker.server>
             </properties>
         </profile>
         <profile>
@@ -35,7 +35,7 @@
                 </property>
             </activation>
             <properties>
-                <docker-server>docker:5000/</docker-server>
+                <docker.server>docker:5000/</docker.server>
             </properties>
         </profile>
     </profiles>
@@ -152,7 +152,8 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.11</version>
                 <configuration>
-                    <imageName>${docker-server}${docker.image.prefix}/${project.artifactId}</imageName>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <newName>${docker.server}${docker.image.prefix}/${project.artifactId}</newName>
                     <dockerDirectory>docker</dockerDirectory>
                     <resources>
                         <resource>
@@ -165,6 +166,7 @@
                     <imageTags>
                         <imageTag>${project.version}</imageTag>
                     </imageTags>
+                    <registryUrl>http://registry:5000/</registryUrl>
                 </configuration>
             </plugin>
             <plugin>
