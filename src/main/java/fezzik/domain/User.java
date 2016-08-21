@@ -13,6 +13,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Represents a fezzik user.
  */
+@Document
 public class User implements Serializable {
 	
 	private static final long serialVersionUID = -2751305641698104649L;

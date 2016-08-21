@@ -16,12 +16,14 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import fezzik.web.controller.model.WebAttributeError;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The framework was forwarding error responses as HTML.  This controller overrides the "/error" mapping that the framework
  * is using that by default returned HTML, to JSON.
  */
 @RestController
+@ApiIgnore	// tell swagger to ignore this controller
 public class FezzikRestErrorController implements ErrorController {
 	
 	@SuppressWarnings("unused")

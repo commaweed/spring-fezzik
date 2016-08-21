@@ -20,7 +20,6 @@ import fezzik.service.UserService;
 import fezzik.web.controller.model.FezzikResponse;
 import fezzik.web.controller.model.UserCredentials;
 
-
 @RestController
 @ExposesResourceFor(UserController.class)
 @RequestMapping("/rest")
@@ -63,7 +62,7 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
 	 */
     @RequestMapping(value = "/user/validate-login", method = RequestMethod.POST, produces = "application/json")
     public FezzikResponse isValidLogin(@RequestBody UserCredentials userCredentials) {
-    	FezzikResponse response = new FezzikResponse(); // default to success
+    	FezzikResponse response = FezzikResponse.getSuccessResponse(null); // default to success
     	
 		boolean validLogin = userService.isValidLogin(userCredentials.getUserId(), userCredentials.getPassword());
 		if (!validLogin) {

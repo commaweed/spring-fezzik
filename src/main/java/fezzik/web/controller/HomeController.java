@@ -1,15 +1,22 @@
 package fezzik.web.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import springfox.documentation.annotations.ApiIgnore;
+
+/**
+ * The index of the web application should redirect to the swagger documentation.
+ */
+@Controller
+@ApiIgnore // tell swagger to ignore this controller
 public class HomeController {
-
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	public String home() {
-		return "Fezzik Home";
-	}
-
+	
+	/**
+	 * Send the root context to the swagger documentation by default.
+	 */
+    @RequestMapping("/")
+    public String home() {
+        return "redirect:swagger-ui.html";
+    }
 }
