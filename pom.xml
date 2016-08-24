@@ -37,10 +37,10 @@
     </profiles>
 
     <distributionManagement>
-        <repository>
+<!--        <repository>
             <id>nexus-releases</id>
             <url>http://${nexus-server}:${nexus-port}/content/repositories/releases</url>
-        </repository>
+        </repository> -->
         <snapshotRepository>
             <id>nexus-snapshots</id>
             <url>http://${nexus-server}:${nexus-port}/content/repositories/snapshots</url>
