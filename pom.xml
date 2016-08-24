@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.elegantts</groupId>
-    <artifactId>fezzik</artifactId>
-    <version>1.0.0</version>
+    <artifactId>fezzik-rest</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Fezzik</name>
     <description>Fezzik with Spring Boot and Docker</description>
