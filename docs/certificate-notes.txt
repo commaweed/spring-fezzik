@@ -60,7 +60,7 @@
 	b.  create the cert signing request (csr)
 
 		[tjjenk2:~/certs]$ openssl req -new -key person1.key -out person1.csr
-		Enter pass phrase for person1.key:
+		Enter pass phrase for person1.key: {same password as vm}
 		You are about to be asked to enter information that will be incorporated
 		into your certificate request.
 		What you are about to enter is what is called a Distinguished Name or a DN.
@@ -88,6 +88,15 @@
 		subject=/C=US/ST=Maryland/L=Gaithersburg/O=ETS/OU=Fezzik/CN=Cary Elwes/emailAddress=cary.elwes@princessbride.com
 		Getting CA Private Key
 		Enter pass phrase for root-ca-protected.	{same password as vm}
+		
+	d.	make a .p12 file
+	
+		[tjjenk2:~/certs]$ openssl pkcs12 -export -inkey person1.key -in person1.crt -out person1.p12
+		Enter pass phrase for person1.key:  {same password as vm}
+		Enter Export Password: {same password as vm}
+		Verifying - Enter Export Password:
+		
+	e.	import the .p12 file into a browser you'll use to connect to the server		
 
 5.  Create a keystore / truststore for tomcat
 	a.  Create the keystore
