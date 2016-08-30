@@ -44,7 +44,7 @@ Run the build
 
     mvn clean package docker:build
 
-    docker run --name fezzik-rest -p 8443:8443 -p 9443:9443 --link fezzik-mongo:mongo  -d ets/fezzik
+    docker run --name fezzik-rest -p 8443:8443 -p 9443:9443 --link fezzik-mongo:mongo  -d ets/fezzik-rest
 
 Test to see if it is running:
 
