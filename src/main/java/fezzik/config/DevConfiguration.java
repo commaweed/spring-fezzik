@@ -36,8 +36,8 @@ public class DevConfiguration implements CommandLineRunner {
     	userService.removeAllUsers();
     	
         // save a couple of customers
-    	userService.addUser(new User("jjsmith", "Jane", "Smith", "yo mama"));
-    	userService.addUser(new User("jrsmith", "John", "Smith", "yo mama2"));
+    	userService.addUser(new User("jjsmith"));
+    	userService.addUser(new User("jrsmith"));
 
         // fetch all customers
         System.out.println("Customers found with findAll():");

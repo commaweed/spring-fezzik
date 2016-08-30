@@ -57,7 +57,15 @@ server:
     key-store: classpath:tomcat-keystore.jks
     key-store-password: letmeinnow #encrypt
     key-password: letmeinnow #encrypt
+    trust-store: classpath:tomcat-truststore.jks
+    trust-store-password: letmeinnow #encrypt
     client-auth: want
+  tomcat:
+    accesslog:
+      directory: /tmp
+      enabled: true
+      pattern: '%h %l %u %t "%r" %s %b %D'
+      suffix: .log    
 
 management:
   port: 9443

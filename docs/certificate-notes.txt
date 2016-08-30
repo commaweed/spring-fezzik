@@ -198,6 +198,50 @@
 		[tjjenk2:~/certs]$ keytool -import -alias tomcat -trustcacerts -file tomcat-keystore.cer -keystore tomcat-keystore.jks
 		Enter keystore password:  {same password as vm}
 		Certificate reply was installed in keystore
+		
+	f.  create the truststore
+	
+		[tjjenk2:~/certs]$ keytool -import -file root-ca-protected.cer -alias root-ca -keystore tomcat-truststore.jks
+		Enter keystore password:  
+		Re-enter new password: 
+		Owner: EMAILADDRESS=fezzik@elegantts.com, CN=www.fezzik.com, OU=Fezzik, O=ETS, L=Gaithersburg, ST=Maryland, C=US
+		Issuer: EMAILADDRESS=fezzik@elegantts.com, CN=www.fezzik.com, OU=Fezzik, O=ETS, L=Gaithersburg, ST=Maryland, C=US
+		Serial number: d785e754a1651cd9
+		Valid from: Tue Aug 30 04:27:15 EDT 2016 until: Wed Aug 30 04:27:15 EDT 2017
+		Certificate fingerprints:
+		         MD5:  C5:75:97:89:45:02:BE:F5:E4:8B:0A:CC:C6:6E:4D:0D
+		         SHA1: 70:FA:24:EB:6F:97:E8:1A:9F:24:F5:57:9C:7B:F3:85:01:47:AD:24
+		         SHA256: AC:E5:AC:73:B9:44:8B:77:71:C9:D3:A7:63:60:A8:23:C6:27:F6:C9:70:C2:A6:BB:7C:CE:E9:7F:9C:4B:41:B1
+		         Signature algorithm name: SHA256withRSA
+		         Version: 3
+		
+		Extensions: 
+		
+		#1: ObjectId: 2.5.29.35 Criticality=false
+		AuthorityKeyIdentifier [
+		KeyIdentifier [
+		0000: 1E E4 B4 7A 2F FC C2 B7   28 D2 8E DF 58 25 88 1B  ...z/...(...X%..
+		0010: C5 5E 66 F9                                        .^f.
+		]
+		]
+		
+		#2: ObjectId: 2.5.29.19 Criticality=false
+		BasicConstraints:[
+		  CA:true
+		  PathLen:2147483647
+		]
+		
+		#3: ObjectId: 2.5.29.14 Criticality=false
+		SubjectKeyIdentifier [
+		KeyIdentifier [
+		0000: 1E E4 B4 7A 2F FC C2 B7   28 D2 8E DF 58 25 88 1B  ...z/...(...X%..
+		0010: C5 5E 66 F9                                        .^f.
+		]
+		]
+		
+		Trust this certificate? [no]:  yes
+		Certificate was added to keystore
+
 
 File Format Notes (for your viewing pleasure):
 

@@ -99,10 +99,7 @@ public class FezzikResponse {
 		}
 		
 		FezzikResponse response = new FezzikResponse(false, cause.getMessage());
-		
-		if (cause != null) {
-			response.setExceptionType(cause.getClass().getSimpleName());
-		}
+		response.setExceptionType(cause.getClass().getSimpleName());
 		
 		return response;
 	}

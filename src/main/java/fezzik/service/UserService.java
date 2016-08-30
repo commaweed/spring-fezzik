@@ -4,7 +4,6 @@ import java.util.List;
 
 import fezzik.domain.User;
 import fezzik.exception.FezzikDatabaseException;
-import fezzik.exception.InvalidPasswordException;
 import fezzik.exception.UserIdAlreadyExistsException;
 import fezzik.exception.UserNotFoundException;
 
@@ -44,18 +43,6 @@ public interface UserService {
 	 * @throws FezzikDatabaseException If an exception occurred while interacting with the back-end data system.
 	 */
 	List<User> getAllUsers();
-	
-	/**
-	 * Validates the given user credentials against the backend data store.  Since this is a rest service, we are going to use
-	 * exceptions and an exception handler to handle the validation of logins.
-	 * @param userId The id of the user.
-	 * @param password The unencrypted password of the user.
-	 * @return <code>true</code> if and only if the given credentials are valid.
-	 * @throws InvalidPasswordException If the user exists in the backend data store but the password does not match.
-	 * @throws UserNotFoundException If the provided user ID does not exist in the back-end system.
-	 * @throws FezzikDatabaseException If an exception occurred while interacting with the back-end data system.
-	 */
-	boolean isValidLogin(String userId, String password);
  
 
 }

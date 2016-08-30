@@ -11,8 +11,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import fezzik.service.security.FezzikUserDetailsService;
+
+
 
 /**
  * Spring application context configuration class for everything related to spring security; that
@@ -23,12 +28,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringSecurityConfig.class);
 	
 	/**
 	 * Access properties via environment.
 	 */
+	@SuppressWarnings("unused")
 	@Autowired
 	private Environment environment;
 
@@ -39,19 +44,19 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
-		final String USER = environment.getRequiredProperty("fezzik.rest.username");
-		final String PWD = environment.getRequiredProperty("fezzik.rest.passwd");
-		final String ROLE = environment.getRequiredProperty("fezzik.rest.role");
-		
-		// the password file contains the encrypted password, but the user provides the real password
-		// dave's war would need to send us the non-encrypted password; 
-		// if the same technique is used to encrypt, we'll probably have to create a UserDetailsService to handle it
-		authManagerBuilder
-			.inMemoryAuthentication()
-			.passwordEncoder(getPasswordEncoder())
-			.withUser(USER)
-			.password(PWD)
-			.roles(ROLE);
+//		final String USER = environment.getRequiredProperty("fezzik.rest.username");
+//		final String PWD = environment.getRequiredProperty("fezzik.rest.passwd");
+//		final String ROLE = environment.getRequiredProperty("fezzik.rest.role");
+//		
+//		// the password file contains the encrypted password, but the user provides the real password
+//		// dave's war would need to send us the non-encrypted password; 
+//		// if the same technique is used to encrypt, we'll probably have to create a UserDetailsService to handle it
+//		authManagerBuilder
+//			.inMemoryAuthentication()
+//			.passwordEncoder(getPasswordEncoder())
+//			.withUser(USER)
+//			.password(PWD)
+//			.roles(ROLE);
 	}
 	
 	/**
@@ -73,10 +78,30 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		//TODO: determine if we will use basic auth for the client war to use to connect or x509 pki auth
+		//TODO: determine if we will use basic auth for the client war to use to connect or x509 pki auth	
+		//setupBasicAuth(http);
+		setupX509(http);
+	}
+	
+	@SuppressWarnings("unused")
+	private void setupBasicAuth(HttpSecurity http) throws Exception {
+		LOGGER.info("setting up basic authentication...");
 		http.authorizeRequests().anyRequest().hasRole("rest_service");
 		http.csrf().disable();
-		http.httpBasic();	
+		http.httpBasic();		
+	}
+	
+	private void setupX509(HttpSecurity http) throws Exception {
+		LOGGER.info("setting up x509 authentication...");
+//		http.antMatcher("/**");
+//		http.x509().authenticationUserDetailsService(getAuthenticationUserDetailsService());
+		
+        http.authorizeRequests().anyRequest().authenticated()
+        .and()
+        .x509()
+          .subjectPrincipalRegex("CN=(.*?)(?:,|$)")
+//          .subjectPrincipalRegex("CN=(.*?)$")
+          .userDetailsService(getUserDetailsService());
 	}
 	
 	/**
@@ -90,4 +115,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     	// TODO: do we care if the encryption strength is in a property or not (probably not)
         return new BCryptPasswordEncoder(4); // strength = 16 (takes time to match, maybe reduce to 4??)
     }
+    
+    @Bean
+    public UserDetailsService getUserDetailsService() {
+    	return new FezzikUserDetailsService();
+    }
+
 }

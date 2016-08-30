@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import fezzik.domain.User;
 import fezzik.service.UserService;
 import fezzik.web.controller.model.FezzikResponse;
-import fezzik.web.controller.model.UserCredentials;
 
 @RestController
 @ExposesResourceFor(UserController.class)
@@ -54,24 +53,6 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = "application/json")
     public User getUser(@PathVariable String userId) {
         return userService.getUser(userId);
-    }
-    
-	/**
-	 * Validates a login.
-	 * @return
-	 */
-    @RequestMapping(value = "/user/validate-login", method = RequestMethod.POST, produces = "application/json")
-    public FezzikResponse isValidLogin(@RequestBody UserCredentials userCredentials) {
-    	FezzikResponse response = FezzikResponse.getSuccessResponse(null); // default to success
-    	
-		boolean validLogin = userService.isValidLogin(userCredentials.getUserId(), userCredentials.getPassword());
-		if (!validLogin) {
-			response = FezzikResponse.getFailureResponse(
-				"isValidLogin returned false; THERE IS NO REASON RIGHT AT THIS MOMENT THAT THIS SHOULD OCCUR!"
-			);
-		}
-    	
-        return response;
     }
 
     /**
