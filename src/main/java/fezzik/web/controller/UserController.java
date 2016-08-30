@@ -54,6 +54,15 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
     public User getUser(@PathVariable String userId) {
         return userService.getUser(userId);
     }
+    
+	/**
+	 * Returns information about the user that has currently logged into the application.
+	 * @return
+	 */
+    @RequestMapping(value = "/user/current", method = RequestMethod.GET, produces = "application/json")
+    public User getUser() {
+        return userService.getRequestUser();
+    }
 
     /**
      * um...

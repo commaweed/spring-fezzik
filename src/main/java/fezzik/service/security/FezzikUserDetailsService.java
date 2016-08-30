@@ -19,47 +19,11 @@ public class FezzikUserDetailsService implements UserDetailsService {
     @Autowired
     private UserService userService;
 
-//	@Override
-//	public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
-//		LOGGER.info("Loading user details...");
-//		X509Certificate certificate = (X509Certificate) token.getCredentials();
-//		String dn = certificate.getSubjectX500Principal().getName();
-//		LOGGER.info("User DN: " + dn);
-//		
-//		
-//		User user = userService.getUser(dn);
-//		if (user == null) {
-//			user = new User(dn, dn, dn, dn);
-//			userService.addUser(user);
-//			LOGGER.info("Added user: " + user);
-//		}
-//		
-//		LOGGER.info("Returning user: " + user);
-//		
-//		FezzikUserSecurityProfile userDetails = new FezzikUserSecurityProfile();
-//		userDetails.setUser(user);
-//
-//		return userDetails;
-//	}
-
 	@Override
-	public UserDetails loadUserByUsername(String dn) throws UsernameNotFoundException {
-		LOGGER.info("return user details for ..." + dn);
-		LOGGER.info("User DN: " + dn);
-		
-		
-		User user = userService.getUser(dn);
-		if (user == null) {
-			user = new User(dn);
-			userService.addUser(user);
-			LOGGER.info("Added user: " + user);
-		}
-		
-		LOGGER.info("Returning user: " + user);
-		
+	public UserDetails loadUserByUsername(String authenticationToken) throws UsernameNotFoundException {
+		User user = userService.login(authenticationToken);
 		FezzikUserSecurityProfile userDetails = new FezzikUserSecurityProfile();
 		userDetails.setUser(user);
-
 		return (UserDetails) userDetails;
 	}
 

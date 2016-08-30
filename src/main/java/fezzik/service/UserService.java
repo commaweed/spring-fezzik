@@ -31,11 +31,27 @@ public interface UserService {
 	/**
 	 * Returns the user for the given userId or <code>null</code> if one was not found in the back-end system.
 	 * @param userId The ID of the user.
-	 * @return A user or <code>null</code>.
+	 * @return A valid user.
 	 * @throws UserNotFoundException If the provided user ID does not exist in the back-end data system.
 	 * @throws FezzikDatabaseException If an exception occurred while interacting with the back-end data system.
 	 */
 	User getUser(String userId);
+
+	/**
+	 * Returns information about the current user that made the request.
+	 * @return A user or <code>null</code>.
+	 * @throws FezzikDatabaseException If an exception occurred while interacting with the back-end data system.
+	 */
+	User getRequestUser();
+	
+	/**
+	 * Returns information about the current user that is attempting to login.  If the user does not exist, a new user
+	 * will be created.
+	 * @param authenticationToken The authentication token provided by spring security.
+	 * @return A user or <code>null</code>.
+	 * @throws FezzikDatabaseException If an exception occurred while interacting with the back-end data system.
+	 */
+	User login(String authenticationToken);
 	
 	/**
 	 * Returns all the users that currently exist in the back-end system.

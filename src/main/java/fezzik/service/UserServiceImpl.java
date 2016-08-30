@@ -7,11 +7,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import fezzik.domain.User;
 import fezzik.exception.FezzikDatabaseException;
+import fezzik.exception.UserNotFoundException;
 import fezzik.repository.UserRepository;
 
 /**
@@ -59,6 +62,26 @@ public class UserServiceImpl implements UserService {
 			throw new FezzikDatabaseException("Unable to remove all users due to error", e);
 		} 	
 	}
+	
+	/**
+	 * Returns the given user from the database.
+	 * @param userId The ID of the user.
+	 * @return A valid User or <code>null</code>.
+	 */
+	private User getDatabaseUser(String userId) {
+		User user = null;
+		
+		if (userId != null) {
+			try {
+				user = userRepository.findOne(userId);
+			} catch (Exception e) {
+				LOGGER.error("Unable to get user [" + userId + "] due to error", e);
+				throw new FezzikDatabaseException("Unable to get user [" + userId + "] due to error", e);
+			}
+		}
+		
+		return user;
+	}
   
     /**
      * {@inheritDoc}
@@ -69,16 +92,45 @@ public class UserServiceImpl implements UserService {
 			throw new IllegalArgumentException("Invalid userId; it cannot be null.");
 		}
 		
-		User user;
-		try {
-			user = userRepository.findOne(userId);
-		} catch (Exception e) {
-			LOGGER.error("Unable to get user [" + userId + "] due to error", e);
-			throw new FezzikDatabaseException("Unable to get user [" + userId + "] due to error", e);
+		User user = getDatabaseUser(userId);
+		if (user == null) {
+			throw new UserNotFoundException(userId);
 		}
 
 		return user;
 	} 
+	
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public User getRequestUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String userId = auth == null ? null : auth.getName(); 
+		
+		User user = getDatabaseUser(userId);
+		if (user == null) {
+			throw new IllegalStateException("Expected user not found in database [" + userId + "]!");
+		}
+		
+		return getDatabaseUser(userId);
+	} 
+	
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public User login(String authenticationToken) {
+		User user = getDatabaseUser(authenticationToken);
+		
+		if (user == null) {
+			user = new User(authenticationToken);
+			this.addUser(user);
+			LOGGER.debug("Added user: " + user);
+		}
+		
+		return user;
+	}	
     
     /**
      * {@inheritDoc}
@@ -96,5 +148,7 @@ public class UserServiceImpl implements UserService {
 		
 		return allUsers == null ? new ArrayList<>() : allUsers;
 	}
+
+
 
 }
