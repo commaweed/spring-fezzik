@@ -166,13 +166,36 @@
                     </execution>
                 </executions>
             </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>docker-file-creation</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>docker</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+							<outputDirectory>${project.build.directory}/docker-filter</outputDirectory>
+						</configuration>						
+					</execution>					
+				</executions>							
+			</plugin>            
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.11</version>
                 <configuration>
                     <imageName>${docker.server}${docker.image.prefix}/${project.artifactId}</imageName>
-                    <dockerDirectory>docker</dockerDirectory>
+                    <dockerDirectory>${project.build.directory}/docker-filter</dockerDirectory>
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>
