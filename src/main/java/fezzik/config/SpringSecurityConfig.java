@@ -99,8 +99,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().authenticated()
         .and()
         .x509()
-          .subjectPrincipalRegex("CN=(.*?)(?:,|$)")
-//          .subjectPrincipalRegex("CN=(.*?)$")
+          .subjectPrincipalRegex("CN=(.*?)(?:,|$)")	// note this regex will store the common name only
+//          .subjectPrincipalRegex("DN=(.*?)$") // note this regex will store the entire DN	
           .userDetailsService(getUserDetailsService());
 	}
 	
