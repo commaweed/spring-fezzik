@@ -9,6 +9,7 @@ import org.springframework.data.rest.webmvc.RepositoryLinksResource;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import fezzik.web.controller.model.FezzikResponse;
 @RestController
 @ExposesResourceFor(UserController.class)
 @RequestMapping("/rest")
+@CrossOrigin
 //TODO: figure out how to give good bad request message for bad post body (USE Matt's AOP idea)
 public class UserController implements ResourceProcessor<RepositoryLinksResource> {
 	
