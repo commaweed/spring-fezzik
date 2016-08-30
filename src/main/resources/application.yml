@@ -54,9 +54,10 @@ spring.data:
 server:
   port: 8443
   ssl:
-    key-store: classpath:keystore.p12
-    key-store-password: changemeasdf
-    key-password: changemeasdf
+    key-store: classpath:tomcat-keystore.jks
+    key-store-password: letmeinnow #encrypt
+    key-password: letmeinnow #encrypt
+    client-auth: want
 
 management:
   port: 9443

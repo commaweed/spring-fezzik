@@ -1,0 +1,225 @@
+1.  Install some software (some already exists - may/may not need apache httpd)
+
+	[tjjenk2:~/certs]$ sudo yum -y install httpd openssl mod_ssl crypto-utils
+
+2.  create the root CA key 
+	a.  create the private key
+	
+		[tjjenk2:~/certs]$ openssl genrsa -des3 -out root-ca-protected.key 2048
+		
+		Generating RSA private key, 2048 bit long modulus
+		.........................+++
+		...........................+++
+		e is 65537 (0x10001)
+		Enter pass phrase for root-ca-protected.key: {same password as vm}
+		Verifying - Enter pass phrase for root-ca-protected.key:
+
+	b.  self-sign the root CA key
+
+		[tjjenk2:~/certs]$ openssl req -x509 -new -nodes -key root-ca-protected.key -sha256 -days 365 -out root-ca-protected.pem
+		
+		Enter pass phrase for root-ca-protected.key: {same password as vm}
+		You are about to be asked to enter information that will be incorporated
+		into your certificate request.
+		What you are about to enter is what is called a Distinguished Name or a DN.
+		There are quite a few fields but you can leave some blank
+		For some fields there will be a default value,
+		If you enter '.', the field will be left blank.
+		-----
+		Country Name (2 letter code) [XX]:US
+		State or Province Name (full name) []:Maryland
+		Locality Name (eg, city) [Default City]:Gaithersburg
+		Organization Name (eg, company) [Default Company Ltd]:ETS
+		Organizational Unit Name (eg, section) []:Fezzik
+		Common Name (eg, your name or your server's hostname) []:www.fezzik.com
+		Email Address []:fezzik@elegantts.com
+		
+	c.  create the binary cer file (i.e. convert pem to cer)
+	
+		[tjjenk2:~/certs]$ openssl x509 -outform der -in root-ca-protected.pem -out root-ca-protected.cer
+		[tjjenk2:~/certs]$ ll
+		total 36
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1025 Aug 30 07:31 root-ca-protected.cer
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1743 Aug 30 04:20 root-ca-protected.key
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1444 Aug 30 04:27 root-ca-protected.pem
+
+3.  install the root certificate into workstations (browsers or trusted cert repos) - use the root-ca-protected.pem file
+
+	as a trusted authority (chrome it is the authorities tab)
+
+4.  create 10 certificates for people (for each do) - I only created one
+	a.	create a private key
+	
+		[tjjenk2:~/certs]$ openssl genrsa -des3 -out person1.key 2048
+		Generating RSA private key, 2048 bit long modulus
+		...................................................................+++
+		............................................................+++
+		e is 65537 (0x10001)
+		Enter pass phrase for person1.key: person1
+
+	b.  create the cert signing request (csr)
+
+		[tjjenk2:~/certs]$ openssl req -new -key person1.key -out person1.csr
+		Enter pass phrase for person1.key: {same password as vm}
+		You are about to be asked to enter information that will be incorporated
+		into your certificate request.
+		What you are about to enter is what is called a Distinguished Name or a DN.
+		There are quite a few fields but you can leave some blank
+		For some fields there will be a default value,
+		If you enter '.', the field will be left blank.
+		-----
+		Country Name (2 letter code) [XX]:US
+		State or Province Name (full name) []:Maryland
+		Locality Name (eg, city) [Default City]:Gaithersburg
+		Organization Name (eg, company) [Default Company Ltd]:ETS
+		Organizational Unit Name (eg, section) []:Fezzik
+		Common Name (eg, your name or your server's hostname) []:Cary Elwes
+		Email Address []:cary.elwes@princessbride.com
+
+		Please enter the following 'extra' attributes
+		to be sent with your certificate request
+		A challenge password []:      
+		An optional company name []
+	
+	c.	sign the csr with the root ca
+	
+		[tjjenk2:~/certs]$ openssl x509 -req -in person1.csr -CA root-ca-protected.pem -CAkey root-ca-protected.key -CAcreateserial -out person1.crt -days 365 -sha256
+		Signature ok
+		subject=/C=US/ST=Maryland/L=Gaithersburg/O=ETS/OU=Fezzik/CN=Cary Elwes/emailAddress=cary.elwes@princessbride.com
+		Getting CA Private Key
+		Enter pass phrase for root-ca-protected.	{same password as vm}
+		
+	d.	make a .p12 file
+	
+		[tjjenk2:~/certs]$ openssl pkcs12 -export -inkey person1.key -in person1.crt -out person1.p12
+		Enter pass phrase for person1.key:  {same password as vm}
+		Enter Export Password: {same password as vm}
+		Verifying - Enter Export Password:
+		
+	e.	import the .p12 file into a browser you'll use to connect to the server		
+
+5.  Create a keystore / truststore for tomcat
+	a.  Create the keystore
+		
+		[tjjenk2:~/certs]$ keytool -genkeypair -keysize 2048 -keyalg RSA -alias tomcat -keystore tomcat-keystore.jks
+		Enter keystore password:  {same password as vm}
+		Re-enter new password: 
+		What is your first and last name?
+		  [Unknown]:  www.fezzik.com
+		What is the name of your organizational unit?
+		  [Unknown]:  Fezzik
+		What is the name of your organization?
+		  [Unknown]:  ETS
+		What is the name of your City or Locality?
+		  [Unknown]:  Gaithersburg
+		What is the name of your State or Province?
+		  [Unknown]:  MD
+		What is the two-letter country code for this unit?
+		  [Unknown]:  US
+		Is CN=www.fezzik.com, OU=Fezzik, O=ETS, L=Gaithersburg, ST=MD, C=US correct?
+		  [no]:  yes
+
+		Enter key password for <tomcat>
+				(RETURN if same as keystore password): 
+		
+	b.  create the cert signing request 
+	
+		[tjjenk2:~/certs]$ keytool -certreq -keyalg RSA -alias tomcat -file tomcat-keystore.csr -keystore tomcat-keystore.jks
+		Enter keystore password:  {same password as vm}
+		
+	c.  Sign the csr with the root ca
+	
+		[tjjenk2:~/certs]$ openssl x509 -req -in tomcat-keystore.csr -CA root-ca-protected.pem -CAkey root-ca-protected.key -CAcreateserial -out tomcat-keystore.crt -days 365 -sha256
+		Signature ok
+		subject=/C=US/ST=MD/L=Gaithersburg/O=ETS/OU=Fezzik/CN=www.fezzik.com
+		Getting CA Private Key
+		Enter pass phrase for root-ca-protected.key: {same password as vm}
+		
+	d.  create the binary cer file (i.e. convert pem to cer)
+
+		[tjjenk2:~/certs]$ openssl x509 -outform der -in tomcat-keystore.crt -out tomcat-keystore.cer
+		[tjjenk2:~/certs]$ ll
+		total 40
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1330 Aug 30 06:19 person1.crt
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1070 Aug 30 05:28 person1.csr
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1751 Aug 30 05:11 person1.key
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1025 Aug 30 07:38 root-ca-protected.cer
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1743 Aug 30 04:20 root-ca-protected.key
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1444 Aug 30 04:27 root-ca-protected.pem
+		-rw-rw-r-- 1 tjjenk2 tjjenk2  894 Aug 30 07:38 tomcat-keystore.cer
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1265 Aug 30 06:51 tomcat-keystore.crt
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 1087 Aug 30 06:51 tomcat-keystore.csr
+		-rw-rw-r-- 1 tjjenk2 tjjenk2 3291 Aug 30 07:35 tomcat-keystore.jks
+
+	e.	import the root ca cert into the keystore
+	
+		[tjjenk2:~/certs]$ keytool -import -alias root -trustcacerts -file root-ca-protected.cer -keystore tomcat-keystore.jks
+		Enter keystore password:  
+		Owner: EMAILADDRESS=fezzik@elegantts.com, CN=www.fezzik.com, OU=Fezzik, O=ETS, L=Gaithersburg, ST=Maryland, C=US
+		Issuer: EMAILADDRESS=fezzik@elegantts.com, CN=www.fezzik.com, OU=Fezzik, O=ETS, L=Gaithersburg, ST=Maryland, C=US
+		Serial number: d785e754a1651cd9
+		Valid from: Tue Aug 30 04:27:15 EDT 2016 until: Wed Aug 30 04:27:15 EDT 2017
+		Certificate fingerprints:
+				 MD5:  C5:75:97:89:45:02:BE:F5:E4:8B:0A:CC:C6:6E:4D:0D
+				 SHA1: 70:FA:24:EB:6F:97:E8:1A:9F:24:F5:57:9C:7B:F3:85:01:47:AD:24
+				 SHA256: AC:E5:AC:73:B9:44:8B:77:71:C9:D3:A7:63:60:A8:23:C6:27:F6:C9:70:C2:A6:BB:7C:CE:E9:7F:9C:4B:41:B1
+				 Signature algorithm name: SHA256withRSA
+				 Version: 3
+
+		Extensions: 
+
+		#1: ObjectId: 2.5.29.35 Criticality=false
+		AuthorityKeyIdentifier [
+		KeyIdentifier [
+		0000: 1E E4 B4 7A 2F FC C2 B7   28 D2 8E DF 58 25 88 1B  ...z/...(...X%..
+		0010: C5 5E 66 F9                                        .^f.
+		]
+		]
+
+		#2: ObjectId: 2.5.29.19 Criticality=false
+		BasicConstraints:[
+		  CA:true
+		  PathLen:2147483647
+		]
+
+		#3: ObjectId: 2.5.29.14 Criticality=false
+		SubjectKeyIdentifier [
+		KeyIdentifier [
+		0000: 1E E4 B4 7A 2F FC C2 B7   28 D2 8E DF 58 25 88 1B  ...z/...(...X%..
+		0010: C5 5E 66 F9                                        .^f.
+		]
+		]
+
+		Trust this certificate? [no]:  yes
+		Certificate was added to keystore		
+
+	e.  import the signed cer file into the keystore
+	
+		[tjjenk2:~/certs]$ keytool -import -alias tomcat -trustcacerts -file tomcat-keystore.cer -keystore tomcat-keystore.jks
+		Enter keystore password:  {same password as vm}
+		Certificate reply was installed in keystore
+
+File Format Notes (for your viewing pleasure):
+
+	CER is an X.509 certificate in binary form, DER encoded. (DER)
+	CRT is a binary X.509 certificate, encapsulated in text (base-64) encoding. (PEM)
+	PEM Base64 encoded ASCII files and contain "-----BEGIN CERTIFICATE-----" and "-----END CERTIFICATE-----" statements (.pem or .crt)
+	DER a binary form of a certificate instead of the ASCII PEM format (.cer or .der)
+	PKCS#7/P7B Format usually stored in Base64 ASCII format and contain "-----BEGIN PKCS7-----" and "-----END PKCS7-----" statements (.p7b or .p7c)
+		A P7B file only contains certificates and chain certificates, not the private key. Several platforms support P7B files 
+		including Microsoft Windows and Java Tomcat.
+	PKCS#12/PFX Format a binary format for storing the server cert, any intermediate certs, and the private key in one encryptable file (.pfx and .p12)
+		When converting a PFX file to PEM format, OpenSSL will put all the certificates and the private key into a single file. 
+		You will need to open the file in a text editor and copy each certificate and private key (including the BEGIN/END statments) 
+		to its own individual text file and save them as certificate.cer, CACert.cer, and privateKey.key respectively.
+
+	pem -> der (aka crt -> cer)	
+
+	openssl x509 -outform der -in certificate.pem -out certificate.der
+	openssl x509 -outform der -in certificate.crt -out certificate.cer
+
+	der -> pem (aka cer -> crt)
+
+	openssl x509 -inform der -in certificate.der -out certificate.pem
+	openssl x509 -inform der -in certificate.cer -out certificate.crt
+	
