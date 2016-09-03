@@ -6,14 +6,14 @@ import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import fezzik.domain.User;
+import fezzik.domain.PkiUser;
 
 public class FezzikUserSecurityProfile implements UserDetails {
 
 
 	private static final long serialVersionUID = -7921906433337948487L;
 
-	private User user;
+	private PkiUser user;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -35,14 +35,14 @@ public class FezzikUserSecurityProfile implements UserDetails {
 	/**
 	 * @return the user
 	 */
-	public User getUser() {
+	public PkiUser getUser() {
 		return user;
 	}
 
 	/**
 	 * @param user the user to set
 	 */
-	public void setUser(User user) {
+	public void setUser(PkiUser user) {
 		this.user = user;
 	}
 

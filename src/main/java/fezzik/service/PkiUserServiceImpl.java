@@ -7,36 +7,34 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import fezzik.domain.User;
+import fezzik.domain.PkiUser;
 import fezzik.exception.FezzikDatabaseException;
 import fezzik.exception.UserNotFoundException;
-import fezzik.repository.UserRepository;
+import fezzik.repository.PkiUserRepository;
 
 /**
- * The implementation of the service that interacts with the user repository.
+ * The implementation of the service that interacts with the user repository for users that login with
+ * 2-way ssl.
  */
 @Service
-public class UserServiceImpl implements UserService {
+@Profile("pki")
+public class PkiUserServiceImpl implements PkiUserService {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PkiUserServiceImpl.class);
 
     @Autowired
-    private UserRepository userRepository;
-    
-    @SuppressWarnings("unused")
-	@Autowired
-    private PasswordEncoder passwordEncoder;
-    
+    private PkiUserRepository userRepository;
+        
     /**
      * {@inheritDoc}
      */
 	@Override
-	public void addUser(User user) {
+	public void addUser(PkiUser user) {
 		if (user == null) {
 			throw new IllegalArgumentException("Invalid user; it cannot be null!");
 		}
@@ -68,8 +66,8 @@ public class UserServiceImpl implements UserService {
 	 * @param userId The ID of the user.
 	 * @return A valid User or <code>null</code>.
 	 */
-	private User getDatabaseUser(String userId) {
-		User user = null;
+	private PkiUser getDatabaseUser(String userId) {
+		PkiUser user = null;
 		
 		if (userId != null) {
 			try {
@@ -87,12 +85,12 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
 	@Override
-	public User getUser(String userId) {
+	public PkiUser getUser(String userId) {
 		if (StringUtils.trimToNull(userId) == null) {
 			throw new IllegalArgumentException("Invalid userId; it cannot be null.");
 		}
 		
-		User user = getDatabaseUser(userId);
+		PkiUser user = getDatabaseUser(userId);
 		if (user == null) {
 			throw new UserNotFoundException(userId);
 		}
@@ -104,11 +102,11 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
 	@Override
-	public User getRequestUser() {
+	public PkiUser getRequestUser() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String userId = auth == null ? null : auth.getName(); 
 		
-		User user = getDatabaseUser(userId);
+		PkiUser user = getDatabaseUser(userId);
 		if (user == null) {
 			throw new IllegalStateException("Expected user not found in database [" + userId + "]!");
 		}
@@ -120,11 +118,11 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
 	@Override
-	public User login(String authenticationToken) {
-		User user = getDatabaseUser(authenticationToken);
+	public PkiUser login(String authenticationToken) {
+		PkiUser user = getDatabaseUser(authenticationToken);
 		
 		if (user == null) {
-			user = new User(authenticationToken);
+			user = new PkiUser(authenticationToken);
 			this.addUser(user);
 			LOGGER.debug("Added user: " + user);
 		}
@@ -136,8 +134,8 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
 	@Override
-	public List<User> getAllUsers() {
-		List<User> allUsers;
+	public List<PkiUser> getAllUsers() {
+		List<PkiUser> allUsers;
 		
 		try {
 			allUsers = userRepository.findAll();
@@ -148,7 +146,5 @@ public class UserServiceImpl implements UserService {
 		
 		return allUsers == null ? new ArrayList<>() : allUsers;
 	}
-
-
-
+	
 }

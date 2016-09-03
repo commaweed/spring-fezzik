@@ -17,27 +17,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import fezzik.domain.User;
-import fezzik.service.BasicAuthUserService;
+import fezzik.domain.PkiUser;
+import fezzik.service.PkiUserService;
 import fezzik.web.controller.model.FezzikResponse;
-import fezzik.web.controller.model.UserCredentials;
 
 @RestController
-@ExposesResourceFor(UserController.class)
+@ExposesResourceFor(PkiUserController.class)
 @RequestMapping("/rest")
 @CrossOrigin
-//TODO: figure out how to give good bad request message for bad post body (USE Matt's AOP idea)
-@Profile("basicauth")
-public class UserController implements ResourceProcessor<RepositoryLinksResource> {
+@Profile("pki")
+public class PkiUserController implements ResourceProcessor<RepositoryLinksResource> {
 	
 	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PkiUserController.class);
 
 	@Autowired
-	private BasicAuthUserService userService;
+	private PkiUserService userService;
 
     @RequestMapping(value = "/user", method = RequestMethod.POST, produces = "application/json")
-	public FezzikResponse addUser(@RequestBody User user) {
+	public FezzikResponse addUser(@RequestBody PkiUser user) {
 		userService.addUser(user);
 		return FezzikResponse.getSuccessResponse("Added user with ID [" + user.getUuid() + "]");
 	}
@@ -47,7 +45,7 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
 	 * @return
 	 */
     @RequestMapping(value = "/user/all", method = RequestMethod.GET, produces = "application/json")
-	public List<User> getAllUsers() {
+	public List<PkiUser> getAllUsers() {
 		return userService.getAllUsers();
 	}
 
@@ -56,26 +54,17 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
 	 * @return
 	 */
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = "application/json")
-    public User getUser(@PathVariable String userId) {
+    public PkiUser getUser(@PathVariable String userId) {
         return userService.getUser(userId);
     }
     
 	/**
-	 * Validates a login.
+	 * Returns information about the user that has currently logged into the application.
 	 * @return
 	 */
-    @RequestMapping(value = "/user/validate-login", method = RequestMethod.POST, produces = "application/json")
-    public FezzikResponse isValidLogin(@RequestBody UserCredentials userCredentials) {
-    	FezzikResponse response = FezzikResponse.getSuccessResponse(null); // default to success
-    	
-		boolean validLogin = userService.isValidLogin(userCredentials.getUserId(), userCredentials.getPassword());
-		if (!validLogin) {
-			response = FezzikResponse.getFailureResponse(
-				"isValidLogin returned false; THERE IS NO REASON RIGHT AT THIS MOMENT THAT THIS SHOULD OCCUR!"
-			);
-		}
-    	
-        return response;
+    @RequestMapping(value = "/user/current", method = RequestMethod.GET, produces = "application/json")
+    public PkiUser getUser() {
+        return userService.getRequestUser();
     }
 
     /**
@@ -83,7 +72,7 @@ public class UserController implements ResourceProcessor<RepositoryLinksResource
      */
     @Override
     public RepositoryLinksResource process(RepositoryLinksResource resource) {
-        resource.add(ControllerLinkBuilder.linkTo(UserController.class).withRel("rest"));
+        resource.add(ControllerLinkBuilder.linkTo(PkiUserController.class).withRel("rest"));
         return resource;
     }
 }

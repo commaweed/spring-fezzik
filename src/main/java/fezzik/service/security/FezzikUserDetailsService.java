@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import fezzik.domain.User;
-import fezzik.service.UserService;
+import fezzik.domain.PkiUser;
+import fezzik.service.PkiUserService;
 
 @Service
 public class FezzikUserDetailsService implements UserDetailsService {
@@ -17,11 +17,12 @@ public class FezzikUserDetailsService implements UserDetailsService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FezzikUserDetailsService.class);
 	
     @Autowired
-    private UserService userService;
+    private PkiUserService userService;
 
 	@Override
 	public UserDetails loadUserByUsername(String authenticationToken) throws UsernameNotFoundException {
-		User user = userService.login(authenticationToken);
+		LOGGER.info("Attempting to loadUserByUsername: " + authenticationToken);
+		PkiUser user = userService.login(authenticationToken);
 		FezzikUserSecurityProfile userDetails = new FezzikUserSecurityProfile();
 		userDetails.setUser(user);
 		return (UserDetails) userDetails;

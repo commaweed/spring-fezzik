@@ -56,16 +56,16 @@ public class SwaggerConfig {
 			.build();	
 		
 		ResponseMessage response401 = new ResponseMessageBuilder()
-				.code(HttpStatus.UNAUTHORIZED.value())
-				.message(HttpStatus.UNAUTHORIZED.getReasonPhrase() + "; should only happen when basic auth fails from client war!")
-				.responseModel(new ModelRef(WebAttributeError.class.getSimpleName())) // TODO: figure out why this doesn't work (tried default constructor, setters, etc.)
-				.build();
+			.code(HttpStatus.UNAUTHORIZED.value())
+			.message(HttpStatus.UNAUTHORIZED.getReasonPhrase() + "; should only happen when basic auth fails from client war!")
+			.responseModel(new ModelRef(WebAttributeError.class.getSimpleName())) // TODO: figure out why this doesn't work (tried default constructor, setters, etc.)
+			.build();
 		
 		ResponseMessage response500 = new ResponseMessageBuilder()
-				.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-				.message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase() + "; status in response will be false")
-				.responseModel(new ModelRef(FezzikResponse.class.getSimpleName())) 
-				.build();		
+			.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+			.message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase() + "; status in response will be false")
+			.responseModel(new ModelRef(FezzikResponse.class.getSimpleName())) 
+			.build();		
 		
 		// all request methods get the following
 		GLOBAL_RESPONSE_MESSAGES.add(response200);

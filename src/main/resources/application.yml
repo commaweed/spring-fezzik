@@ -1,55 +1,11 @@
-spring:
-  profiles.active: dev
+spring.profiles.active: dev
 
 ---
 
-spring:
-  profiles: dev
+# Use this profile in conjunction with dev or docker
+# it will provide basic authentication over 1-way ssl as the security
 
-spring.application:
-    name: fezzik
-spring.data:
-    mongodb:
-      host: localhost
-      port: 27017
-      dbname: fezzik
-
-server:
-  port: 8080
-
-management:
-  port: 9090
-  address: 127.0.0.1
-
-ribbon:
-  ServerListRefreshInterval: 1000
-
-endpoints:
-  health:
-    sensitive: false
-  restart:
-    enabled: true
-  shutdown:
-    enabled: true
-    
-fezzik:
-  rest:
-    username: inigo
-    passwd: $2a$04$74Mmg.FgUXqm/FGMZofL2.ZCXuSE/HF7Ijx7LeZZheqaVKUf9ceH2 # remove this comment later = montoya
-    role: rest_service
-
----
-
-spring:
-  profiles: docker
-
-spring.application:
-    name: fezzik
-spring.data:
-    mongodb:
-      host: mongo
-      port: 27017
-      dbname: fezzik
+spring.profiles: basicauth
 
 server:
   port: 8443
@@ -57,18 +13,8 @@ server:
     key-store: classpath:tomcat-keystore.jks
     key-store-password: letmeinnow #encrypt
     key-password: letmeinnow #encrypt
-    trust-store: classpath:tomcat-truststore.jks
-    trust-store-password: letmeinnow #encrypt
-    client-auth: want
-  tomcat:
-    accesslog:
-      directory: /tmp
-      enabled: true
-      pattern: '%h %l %u %t "%r" %s %b %D'
-      suffix: .log    
 
-management:
-  port: 9443
+management.port: 9443
 
 endpoints:
   health:
@@ -82,4 +28,71 @@ fezzik:
   rest:
     username: inigo
     passwd: $2a$16$zZX1uBdeDm.InOGPy3hxp.s3hyyWOo.ObamAQYSySk69FY07aCNv6 # remove this comment later = montoya
-    role: rest_service    
+    role: rest_service   
+
+---
+
+# Use this profile in conjunction with dev or docker
+# it will provide 2-way ssl as the security
+
+spring:
+  profiles: pki
+
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:tomcat-keystore.jks
+    key-store-password: letmeinnow #encrypt
+    key-password: letmeinnow #encrypt
+    trust-store: classpath:tomcat-truststore.jks
+    trust-store-password: letmeinnow #encrypt
+    client-auth: want
+
+management:
+  port: 9443
+
+endpoints:
+  health:
+    sensitive: true
+  restart:
+    enabled: false
+  shutdown:
+    enabled: false   
+
+---
+
+spring.profiles: dev
+spring.profiles.include: basicauth
+
+spring.application.name: fezzik
+    
+spring.data:
+    mongodb:
+      host: localhost
+      port: 27017
+      dbname: fezzik
+
+---
+
+spring.profiles: docker
+spring.profiles.include: pki
+
+spring.application.name: fezzik
+
+spring.data:
+    mongodb:
+      host: mongo
+      port: 27017
+      dbname: fezzik
+      
+server:
+  tomcat:
+    accesslog:
+      directory: /tmp
+      enabled: true
+      pattern: '%h %l %u %t "%r" %s %b %D'
+      suffix: .log          
+    
+
+    
+     
